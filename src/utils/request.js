@@ -1,16 +1,20 @@
 import axios from 'axios'
 import router from '@/router'
 import { showFailToast } from 'vant'
+import { useUserStore } from '@/stores/index.js'
 
-const isDev = import.meta.env.NODE_ENV === 'development'
-const request = axios.create({
-  baseURL: isDev ? 'http://localhost:8080/api' : '线上地址',
+// const isDev = import.meta.env.NODE_ENV === 'development'
+const instance = axios.create({
+  baseURL: 'http://localhost:8090/api',
   timeout: 10000
 })
 
-request.defaults.withCredentials = true
-request.interceptors.request.use(
+instance.interceptors.request.use(
   (config) => {
+    const userStore = useUserStore()
+    if (userStore.user?.accessToken && config.headers) {
+      config.headers.Authorization = userStore.user.accessToken
+    }
     return config
   },
   (err) => {
@@ -18,16 +22,26 @@ request.interceptors.request.use(
   }
 )
 
-request.interceptors.response.use(
+instance.interceptors.response.use(
   (res) => {
-    if (res?.data?.code !== 10000) {
-      showFailToast(res.data.message || '业务失败')
+    if (res?.data?.code !== 200) {
+      showFailToast(res.data.message || '服务异常')
+      if (res?.data?.code === 40100) {
+        // 跳转登录 带上接口失效的地址，用于登录后跳回
+        router.push({
+          path: '/login',
+          query: {
+            returnUrl: router.currentRoute.value.fullPath
+          }
+        })
+      }
       return Promise.reject(res.data)
     }
     return res.data
   },
   (err) => {
-    if (err.response?.status === 401) {
+    showFailToast(err.response.data.message || '服务异常')
+    if (err.response?.code === 40100) {
       // 跳转登录 带上接口失效的地址，用于登录后跳回
       router.push({
         path: '/login',
@@ -40,4 +54,4 @@ request.interceptors.response.use(
   }
 )
 
-export default { request }
+export default instance

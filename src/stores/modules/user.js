@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useUserStore = defineStore(
-  'cp-User',
+  'cp-user',
   () => {
     // 用户信息
     const user = ref()

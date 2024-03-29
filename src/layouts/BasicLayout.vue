@@ -1,46 +1,63 @@
 <script setup>
-import { ref } from 'vue'
-import { showToast } from 'vant'
-import Home from '@/views/Home/index.vue'
-import Team from '@/views/Team/index.vue'
-import User from '@/views/User/index.vue'
-
-const onClickLeft = () => history.back()
-const onClickRight = () => showToast('按钮')
-const active = ref('home')
-const onChange = (index) => showToast(`标签 ${index}`)
+import MyIcon from '@/components/MyIcon.vue'
 </script>
 
 <template>
-  <van-nav-bar
-    title="标题"
-    left-text="返回"
-    left-arrow
-    @click-left="onClickLeft"
-    @click-right="onClickRight"
-  >
-    <template #right>
-      <van-icon name="search" size="18" />
-    </template>
-  </van-nav-bar>
-
-  <div id="content">
-    <template v-if="active === 'home'">
-      <Home />
-    </template>
-    <template v-if="active === 'team'">
-      <Team />
-    </template>
-    <template v-if="active === 'user'">
-      <User />
-    </template>
+  <div class="layout-page">
+    <router-view />
+    <van-tabbar route>
+      <van-tabbar-item to="/home"
+        >主页
+        <template #icon="{ active }">
+          <my-icon
+            :name="`home-index-${active ? 'active' : 'default'}`"
+          ></my-icon>
+        </template>
+      </van-tabbar-item>
+      <van-tabbar-item to="/article">
+        红色资源
+        <template #icon="{ active }">
+          <my-icon
+            :name="`home-article-${active ? 'active' : 'default'}`"
+          ></my-icon>
+        </template>
+      </van-tabbar-item>
+      <van-tabbar-item to="/friend">
+        好友
+        <template #icon="{ active }">
+          <my-icon
+            :name="`home-notice-${active ? 'active' : 'default'}`"
+          ></my-icon>
+        </template>
+      </van-tabbar-item>
+      <van-tabbar-item to="/user">
+        我的
+        <template #icon="{ active }">
+          <my-icon
+            :name="`home-mine-${active ? 'active' : 'default'}`"
+          ></my-icon>
+        </template>
+      </van-tabbar-item>
+    </van-tabbar>
   </div>
-
-  <van-tabbar v-model="active" @change="onChange">
-    <van-tabbar-item icon="home-o" name="home">主页</van-tabbar-item>
-    <van-tabbar-item icon="search" name="team">队伍</van-tabbar-item>
-    <van-tabbar-item icon="friends-o" name="user">个人</van-tabbar-item>
-  </van-tabbar>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.layout-page {
+  :deep() {
+    .van-tabbar-item {
+      &__icon {
+        font-size: 21px;
+      }
+
+      &__text {
+        font-size: 11px;
+      }
+
+      &:not(.van-tabbar-item--active) {
+        color: var(--cp-text3);
+      }
+    }
+  }
+}
+</style>

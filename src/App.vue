@@ -1,9 +1,7 @@
-<script setup>
-import BasicLayout from '@/layouts/BasicLayout.vue'
-</script>
+<script setup></script>
 
 <template>
-  <BasicLayout />
+  <router-view />
 </template>
 
 <style scoped></style>
