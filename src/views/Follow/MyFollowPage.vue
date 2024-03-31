@@ -39,7 +39,9 @@ const onSearch = () => {
       <van-search
         v-model="searchForm.keyword"
         placeholder="请输入搜索关键词"
+        show-action
         @search="onSearch"
+        @cancel="onSearch"
       />
       <van-list
         v-model:loading="loading"

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import MyIcon from '@/components/MyIcon.vue'
 import { getTagListApi } from '@/services/tag.js'
-import ArticleList from '@/views/Article/ArticleList.vue'
+import ArticleList from '@/views/Article/components/ArticleList.vue'
 
 const active = ref(0)
 const tagList = ref([])

@@ -33,11 +33,16 @@ const idCardRules = [
   }
 ]
 
+const replyRules = [
+  { required: true, message: '请输入评论内容' }
+]
+
 export {
   mobileRules,
   usernameRules,
   userPasswordRules,
   codeRules,
   nameRules,
-  idCardRules
+  idCardRules,
+  replyRules
 }

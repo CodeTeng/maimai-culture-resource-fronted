@@ -1,8 +1,50 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import MyIcon from '@/components/MyIcon.vue'
+import * as echarts from 'echarts'
+import 'echarts/extension/bmap/bmap'
+import { option } from '@/utils/map.js'
+import { useUserStore } from '@/stores/index.js'
+import { getTagListApi } from '@/services/tag.js'
+import ArticleList from '@/views/Article/components/ArticleList.vue'
 
 const active = ref(0)
+const videoUrls = ref([
+  {
+    url: 'https://vodpub1.v.news.cn/original/20240201/54f6f251a262450bae3b405390746c51.mp4'
+  },
+  {
+    url: 'https://vodpub1.v.news.cn/original/20240331/a58c00a418a347f480dbdb3c2e23edcb.mp4'
+  }
+])
+const mapEcharts = ref(null)
+const initEcharts = () => {
+  const myMap = echarts.init(mapEcharts.value)
+  myMap.setOption(option)
+}
+const tagList = ref([])
+const getTagList = async () => {
+  const res = await getTagListApi()
+  tagList.value = res.data
+}
+const userStore = useUserStore()
+const userTagList = ref([])
+const getUserTagList = () => {
+  for (let i = 0; i < userStore.user.userTags.length; i++) {
+    const tag = userStore.user.userTags[i]
+    for (let j = 0; j < tagList.value.length; j++) {
+      if (tagList.value[j].tagName === tag) {
+        userTagList.value.push(tagList.value[j])
+        break
+      }
+    }
+  }
+}
+onMounted(async () => {
+  initEcharts()
+  await getTagList()
+  getUserTagList()
+})
 </script>
 
 <template>
@@ -25,54 +67,15 @@ const active = ref(0)
     <!-- 导航 -->
     <div class="home-navs">
       <van-row>
-        <van-col span="8">
-          <router-link to="/" class="nav">
-            <my-icon name="home-doctor"></my-icon>
-            <p class="title">问医生</p>
-            <p class="desc">按科室查问医生</p>
-          </router-link>
-        </van-col>
-        <van-col span="8">
-          <router-link to="/consult/fast" class="nav">
-            <my-icon name="home-graphic"></my-icon>
-            <p class="title">极速问诊</p>
-            <p class="desc">20s医生极速回复</p>
-          </router-link>
-        </van-col>
-        <van-col span="8">
-          <router-link to="/" class="nav">
-            <my-icon name="home-prescribe"></my-icon>
-            <p class="title">开药门诊</p>
-            <p class="desc">线上买药更方便</p>
-          </router-link>
+        <van-col span="12" v-for="item in videoUrls" :key="item.url">
+          <div class="nav">
+            <div class="video-container">
+              <video controls :src="item.url"></video>
+            </div>
+          </div>
         </van-col>
       </van-row>
-      <van-row>
-        <van-col span="6">
-          <router-link to="/" class="nav min">
-            <my-icon name="home-order"></my-icon>
-            <p class="title">药品订单</p>
-          </router-link>
-        </van-col>
-        <van-col span="6">
-          <router-link to="/" class="nav min">
-            <my-icon name="home-docs"></my-icon>
-            <p class="title">健康档案</p>
-          </router-link>
-        </van-col>
-        <van-col span="6">
-          <router-link to="/" class="nav min">
-            <my-icon name="home-rp"></my-icon>
-            <p class="title">我的处方</p>
-          </router-link>
-        </van-col>
-        <van-col span="6">
-          <router-link to="/" class="nav min">
-            <my-icon name="home-find"></my-icon>
-            <p class="title">疾病查询</p>
-          </router-link>
-        </van-col>
-      </van-row>
+      <div ref="mapEcharts" style="height: 300px; width: 100%"></div>
     </div>
     <!-- 轮播图 -->
     <div class="home-banner">
@@ -90,13 +93,11 @@ const active = ref(0)
     </div>
     <!-- 标签栏 -->
     <van-tabs shrink sticky v-model:active="active">
-      <van-tab title="推荐">1</van-tab>
-      <van-tab title="热门">
-        <p v-for="i in 100" :key="i">内容</p>
+      <van-tab v-for="item in userTagList" :key="item.id" :title="item.tagName">
+        <ArticleList :keyword="keyword" :tag-id="item.id" />
       </van-tab>
-      <van-tab title="旅游">3</van-tab>
-      <van-tab title="红色">4</van-tab>
     </van-tabs>
+    <van-back-top />
   </div>
 </template>
 
@@ -162,31 +163,18 @@ const active = ref(0)
     align-items: center;
     padding: 10px 0;
 
-    .cp-icon {
-      font-size: 48px;
-    }
+    .video-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100% - 44px);
+      margin: 2px;
 
-    .title {
-      font-weight: 500;
-      margin-top: 5px;
-      color: var(--cp-text1);
-    }
-
-    .desc {
-      font-size: 11px;
-      color: var(--cp-tag);
-      margin-top: 2px;
-    }
-
-    &.min {
-      .cp-icon {
-        font-size: 31px;
-      }
-
-      .title {
-        font-size: 13px;
-        color: var(--cp-text2);
-        font-weight: normal;
+      video {
+        max-width: 100%;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
       }
     }
   }

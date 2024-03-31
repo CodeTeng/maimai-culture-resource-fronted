@@ -71,7 +71,7 @@ const router = createRouter({
     },
     {
       path: '/articleInfo/:id',
-      component: () => import('@/views/Article/ArticleInfo.vue'),
+      component: () => import('@/views/Article/components/ArticleInfo.vue'),
       meta: { title: '文章详情' }
     },
     {
@@ -81,7 +81,7 @@ const router = createRouter({
     },
     {
       path: '/user/myFav',
-      component: () => import('@/views/Article/MyArticlePage.vue'),
+      component: () => import('@/views/Article/components/MyArticlePage.vue'),
       meta: { title: '我的收藏' }
     },
     {
@@ -96,8 +96,18 @@ const router = createRouter({
     },
     {
       path: '/user/comment',
-      component: () => import('@/views/Comment/UserCommentPage.vue'),
+      component: () => import('@/views/Reply/MyReplyPage.vue'),
       meta: { title: '我的评论' }
+    },
+    {
+      path: '/select',
+      component: () => import('@/views/Tag/index.vue'),
+      meta: { title: '选择标签' }
+    },
+    {
+      path: '/demo',
+      component: () => import('@/views/Reply/Demo.vue'),
+      meta: { title: '评论demo' }
     }
   ]
 })

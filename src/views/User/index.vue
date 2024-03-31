@@ -64,6 +64,7 @@ const tools = [
   { label: '我的好友', path: '/friend' },
   { label: '我的关注', path: '/user/myFollow' },
   { label: '修改密码', path: '/user/updatePwd' },
+  { label: '修改标签', path: '/select' },
   { label: '我的评论', path: '/user/comment' },
   { label: '添加好友', path: '/friend/add' },
   { label: '系统设置', path: '/system' }
@@ -157,9 +158,9 @@ const tools = [
   &-head {
     height: 200px;
     background: linear-gradient(
-      180deg,
-      rgba(44, 181, 165, 0.46),
-      rgba(44, 181, 165, 0)
+        180deg,
+        rgba(44, 181, 165, 0.46),
+        rgba(44, 181, 165, 0)
     );
     margin: 0 -15px;
     padding: 0 15px;

@@ -1,18 +1,22 @@
 import request from '@/utils/request.js'
 
-// 分页查询文章
-export const getArticlePageApi = (data) => {
-  return request.post('/articles/searchArticle', data)
+// 根据条件查询文章
+export const getArticleListApi = (params) => {
+  return request.get('/articles/searchArticle', {
+    params
+  })
 }
 
-// 分页查看我收藏文章数量
+// 查看我收藏文章数量
 export const getMyFavArticleCountApi = () => {
   return request.get('/articles/myFavArticleCount')
 }
 
-// 分页查看我收藏的文章
-export const getMyFavArticlePageApi = (data) => {
-  return request.post('/articles/getMyFavArticle', data)
+// 查看我收藏的文章
+export const getMyFavArticleListApi = (params) => {
+  return request.get('/articles/getMyFavArticle', {
+    params
+  })
 }
 
 // 浏览文章

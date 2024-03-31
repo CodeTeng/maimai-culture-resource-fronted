@@ -20,8 +20,13 @@ const onSubmit = async () => {
   })
   // 登录成功 存储用户信息 跳转到上次页面
   useStore.setUser(res.data)
-  showSuccessToast('登录成功')
-  router.replace(route.query.returnUrl || '/')
+  // 判断用户是否选择了标签 如果没有选择 让其选择
+  if (useStore.user?.userTags === null) {
+    router.push('/select')
+  } else {
+    showSuccessToast('登录成功')
+    router.replace(route.query.returnUrl || '/')
+  }
 }
 </script>
 

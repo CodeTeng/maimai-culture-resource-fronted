@@ -68,7 +68,7 @@ export const getUserInfoApi = (id) => {
   return request.get(`/users/getUserDetail/${id}`)
 }
 
-// 查看我的评论数量
-export const getMyCommentCountApi = () => {
-  return request.get('/users/getMyCommentCount')
+// 更新我的标签
+export const updateMyUserTagsApi = (data) => {
+  return request.put('/users/update/tags', data)
 }

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '@/router'
-import { showFailToast } from 'vant'
+import { closeToast, showFailToast, showLoadingToast, Toast } from 'vant'
 import { useUserStore } from '@/stores/index.js'
 
 // const isDev = import.meta.env.NODE_ENV === 'development'
@@ -11,6 +11,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    showLoadingToast({
+      message: '请求中',
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    })
     const userStore = useUserStore()
     if (userStore.user?.accessToken && config.headers) {
       config.headers.Authorization = userStore.user.accessToken
@@ -36,6 +42,8 @@ instance.interceptors.response.use(
         })
       }
       return Promise.reject(res.data)
+    } else {
+      closeToast()
     }
     return res.data
   },
