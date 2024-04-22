@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router'
 import { showConfirmDialog, showSuccessToast, showToast } from 'vant'
 import { deleteFriendApi } from '@/services/friend.js'
+import { getUserInfoApi } from '@/services/user.js'
 
 defineProps({
   item: Object
@@ -18,10 +19,15 @@ const deleteFriend = async (id) => {
   // 通知父级组件
   emit('getFriendList')
 }
-const chat = (id) => {
-  showToast('暂未开发')
-  console.log(id)
-  console.log('模拟聊天')
+const chat = async (id) => {
+  const res = await getUserInfoApi(id)
+  if (res.data.userPhone) {
+    return showToast(`${res.data.username}的手机号是：${res.data.userPhone}，快去添加吧！`)
+  }
+  if (res.data.userEmail) {
+    return showToast(`${res.data.username}的邮箱是：${res.data.userEmail}，快去添加吧！`)
+  }
+  showToast(`${res.data.username}暂时没有添加手机号和邮箱，你可以通过添加好友联系他`)
 }
 </script>
 
@@ -37,17 +43,19 @@ const chat = (id) => {
         <p class="name">{{ item.applyUser.username }}</p>
         <p class="dep van-ellipsis">
           <span v-if="item.applyUser.userAge">{{
-            `${item.applyUser.userAge}岁`
-          }}</span>
+              `${item.applyUser.userAge}岁`
+            }}</span>
           {{ item.applyUser.userGender === 0 ? '男' : '女' }}
           {{ item.applyUser.userPhone }}
         </p>
       </div>
       <van-button type="primary" size="mini" @click="chat(item.applyUser.id)"
-        >私聊</van-button
+      >私聊
+      </van-button
       >
       <van-button type="danger" size="mini" @click="deleteFriend(item.id)"
-        >删除</van-button
+      >删除
+      </van-button
       >
     </div>
   </div>

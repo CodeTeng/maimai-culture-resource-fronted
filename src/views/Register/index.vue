@@ -1,20 +1,50 @@
 <script setup>
 import { ref } from 'vue'
-import { usernameRules, userPasswordRules } from '@/utils/rules.js'
+import {
+  usernameRules,
+  userPasswordRules,
+  mobileRules,
+  codeRules
+} from '@/utils/rules.js'
 import MyIcon from '@/components/MyIcon.vue'
 import { userRegisterApi } from '@/services/user.js'
 import { showSuccessToast } from 'vant'
 import { useRouter } from 'vue-router'
+import { sendMobileCode } from '@/services/common.js'
 
 const username = ref('')
 const userPassword = ref('')
 const checkPassword = ref('')
+const userPhone = ref('')
+const code = ref('')
+const time = ref(0)
+let timerId
+const form = ref(null)
 const userPasswordIsShow = ref(false)
 const checkPasswordIsShow = ref(false)
 const router = useRouter()
+const sendCode = async () => {
+  // 已经倒计时time的值大于0，此时不能发送验证码
+  if (time.value > 0) return
+  // 验证不通过报错，阻止程序继续执行
+  await form.value?.validate('userPhone')
+  await sendMobileCode({
+    userPhone: userPhone.value
+  })
+  showSuccessToast('发送成功')
+  time.value = 60
+  // 倒计时
+  if (timerId) clearInterval(timerId)
+  timerId = setInterval(() => {
+    time.value--
+    if (time.value <= 0) clearInterval(timerId)
+  }, 1000)
+}
 const onSubmit = async () => {
   await userRegisterApi({
     username: username.value,
+    userPhone: userPhone.value,
+    code: code.value,
     userPassword: userPassword.value,
     checkPassword: checkPassword.value
   })
@@ -34,7 +64,7 @@ const onSubmit = async () => {
     </van-row>
     <van-divider></van-divider>
     <div>
-      <van-form @submit="onSubmit">
+      <van-form ref="form" @submit="onSubmit">
         <van-cell-group inset>
           <van-field
             required
@@ -44,6 +74,32 @@ const onSubmit = async () => {
             name="username"
             placeholder="请输入用户账号"
           />
+          <van-field
+            required
+            v-model="userPhone"
+            :rules="mobileRules"
+            label="用户手机号"
+            name="userPhone"
+            placeholder="请输入用户手机号"
+          />
+          <van-field
+            required
+            v-model="code"
+            :rules="codeRules"
+            label="短信验证码"
+            name="code"
+            placeholder="请输入短信验证码"
+          >
+            <template #button>
+              <span
+                class="btn-send"
+                :class="{ active: time > 0 }"
+                @click="sendCode"
+              >
+                {{ time > 0 ? `${time}s后再次发送` : '发送验证码' }}
+              </span>
+            </template>
+          </van-field>
           <van-field
             required
             v-model="userPassword"
@@ -115,5 +171,33 @@ const onSubmit = async () => {
   margin-top: 8px;
   display: flex;
   justify-content: center;
+}
+
+.van-form {
+  padding: 0 14px;
+
+  .cp-cell {
+    height: 52px;
+    line-height: 24px;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+
+    .van-checkbox {
+      a {
+        color: var(--cp-primary);
+        padding: 0 5px;
+      }
+    }
+  }
+
+  .btn-send {
+    color: var(--cp-primary);
+
+    &.active {
+      color: rgba(22, 194, 163, 0.5);
+    }
+  }
 }
 </style>

@@ -6,9 +6,11 @@ export const userLoginApi = ({ username, userPassword }) => {
 }
 
 // 用户注册
-export const userRegisterApi = ({ username, userPassword, checkPassword }) => {
+export const userRegisterApi = ({ username, userPhone, code, userPassword, checkPassword }) => {
   return request.post('/users/register', {
     username,
+    userPhone,
+    code,
     userPassword,
     checkPassword
   })
@@ -71,4 +73,9 @@ export const getUserInfoApi = (id) => {
 // 更新我的标签
 export const updateMyUserTagsApi = (data) => {
   return request.put('/users/update/tags', data)
+}
+
+// 找回密码
+export const findMyPwdApi = (data) => {
+  return request.post('/users/findPassword', data)
 }

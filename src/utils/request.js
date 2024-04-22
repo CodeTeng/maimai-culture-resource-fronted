@@ -1,6 +1,6 @@
 import axios from 'axios'
 import router from '@/router'
-import { closeToast, showFailToast, showLoadingToast, Toast } from 'vant'
+import { closeToast, showFailToast, showLoadingToast } from 'vant'
 import { useUserStore } from '@/stores/index.js'
 
 // const isDev = import.meta.env.NODE_ENV === 'development'
@@ -49,7 +49,7 @@ instance.interceptors.response.use(
   },
   (err) => {
     showFailToast(err.response.data.message || '服务异常')
-    if (err.response?.code === 40100) {
+    if (err.response?.code === 401) {
       // 跳转登录 带上接口失效的地址，用于登录后跳回
       router.push({
         path: '/login',

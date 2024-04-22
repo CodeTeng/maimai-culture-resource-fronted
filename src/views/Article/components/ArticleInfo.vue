@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   favOrCancelFavArticleApi,
@@ -24,6 +24,7 @@ const loading = ref(false)
 const show = ref(false)
 const total = ref(0)
 const pageCount = ref(0)
+const childReplyShow = ref(false)
 const searchForm = ref({
   pageNo: 1,
   pageSize: 5,
@@ -72,9 +73,13 @@ const onSubmit = async () => {
   await addReplyApi(replyForm.value)
   searchForm.value.pageNo = 1
   await getArticleReplyPageList()
-  article.value.replyTimes++
+  // 不是子评论才添加回复次数
+  if (childParams.value.answerId) {
+    article.value.replyTimes++
+  }
   replyForm.value.content = ''
   show.value = false
+  childParams.value.answerId = undefined
   showSuccessToast('评论成功')
 }
 const onReply = async (item) => {
@@ -83,11 +88,17 @@ const onReply = async (item) => {
   replyForm.value.targetUserId = item.userId
   replyForm.value.targetReplyId = item.id
 }
+const childReplyList = ref([])
+const childParams = ref({
+  answerId: undefined,
+  articleId: undefined
+})
 // 查询子评论
-const getChildReply = (id) => {
-  showToast('查看子评论 TODO')
-  searchForm.value.answerId = id
-  console.log(id)
+const getChildReply = async (id) => {
+  childReplyShow.value = true
+  childParams.value.answerId = id
+  const res = await pageReplyApi(childParams.value)
+  childReplyList.value = res.data.list
 }
 const deleteReply = async (id) => {
   await showConfirmDialog({
@@ -95,11 +106,26 @@ const deleteReply = async (id) => {
     message: '你确定要删除该评论吗？'
   })
   await deleteMyReplyApi(id)
-  article.value.replyTimes--
+  if (!childParams.value.answerId) {
+    article.value.replyTimes--
+  }
   searchForm.value.pageNo = 1
   await getArticleReplyPageList()
+  childParams.value.answerId = undefined
   showSuccessToast('删除成功')
 }
+// 添加全局点击事件监听器
+const handleClickOutside = (event) => {
+  if (!event.target.closest('.childReply')) {
+    // 如果点击的地方不是评论区域，则关闭子评论或其他弹出框
+    childReplyShow.value = false // 关闭评论弹窗
+    // 你可以添加其他关闭逻辑，例如关闭其他弹出框
+  }
+}
+onMounted(() => {
+  // 添加点击事件监听器
+  document.addEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
@@ -135,7 +161,7 @@ const deleteReply = async (id) => {
           <div class="time">
             {{ item.createTime }}
             <van-divider vertical dashed />
-            <span @click="getChildReply(item.id)"
+            <span @click="getChildReply(item.id)" class="childReply"
               >评论数量：{{ item.replyTimes }}</span
             >
             <van-divider vertical dashed />
@@ -198,6 +224,32 @@ const deleteReply = async (id) => {
       </van-form>
     </template>
   </van-popup>
+
+  <van-floating-panel v-if="childReplyShow">
+    <div class="detail-page" style="margin-top: 5px">
+      <!-- 文章评价 -->
+      <div class="comment" style="padding: 0">
+        <div class="comment-list">
+          <div class="comment-item" v-for="item in childReplyList" :key="item.id">
+            <div class="top" @click="router.push(`/userInfo/${item.userId}`)">
+              <img :src="item.userAvatar" alt="" />
+              <div class="name">{{ item.username }}</div>
+            </div>
+            <div class="content">{{ item.commentContent }}</div>
+            <div class="time">
+              {{ item.createTime }}
+              <van-divider vertical dashed />
+              <van-icon
+                v-if="item.userId === userStore.user.id"
+                @click="deleteReply(item.id)"
+                name="delete-o"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </van-floating-panel>
 </template>
 
 <style scoped lang="scss">
@@ -208,7 +260,7 @@ const deleteReply = async (id) => {
 }
 
 .detail-page {
-  margin-top: 44px;
+  margin-top: 40px;
   overflow: hidden;
   padding: 0 15px;
 
@@ -272,7 +324,7 @@ const deleteReply = async (id) => {
     line-height: 30px;
 
     .top {
-      width: 80px;
+      width: 100px;
       height: 30px;
       display: flex;
       align-items: center;

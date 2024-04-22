@@ -85,6 +85,11 @@ const onSubmit = async () => {
           to="/register"
           value="还没有账号？点击注册"
         ></van-cell>
+        <van-cell
+          title=""
+          to="/findPwd"
+          value="忘记密码？点击找回密码"
+        ></van-cell>
       </van-form>
     </div>
   </div>

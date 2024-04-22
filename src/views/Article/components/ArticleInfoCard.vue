@@ -15,12 +15,12 @@ const router = useRouter()
       </div>
     </template>
     <template #title>
-      <div style="font-weight: bold">
+      <div style="font-weight: bold" @click="router.push(`/articleInfo/${item.id}`)">
         <van-text-ellipsis :content="item.articleTitle" />
       </div>
     </template>
     <template #desc>
-      <div style="font-weight: bold; color: #b3b4b6">
+      <div style="font-weight: bold; color: #b3b4b6" @click="router.push(`/articleInfo/${item.id}`)">
         <van-text-ellipsis rows="3" :content="item.articleContent" />
       </div>
     </template>

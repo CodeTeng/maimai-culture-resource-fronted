@@ -23,6 +23,11 @@ const router = createRouter({
       meta: { title: '注册' }
     },
     {
+      path: '/findPwd',
+      component: () => import('@/views/FindPwd/index.vue'),
+      meta: { title: '找回密码' }
+    },
+    {
       path: '/',
       component: () => import('@/layouts/BasicLayout.vue'),
       redirect: '/home',
@@ -118,7 +123,7 @@ router.beforeEach((to) => {
   NProgress.start()
   const userStore = useUserStore()
   // 不需要登录的页面 白名单
-  const whiteList = ['/login', '/register']
+  const whiteList = ['/login', '/register', '/findPwd']
   // 如果没有登录且不在白名单内，去登录
   if (!userStore.user?.id && !whiteList.includes(to.path)) {
     showToast('请先登录')
