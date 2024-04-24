@@ -18,7 +18,7 @@ import MyIcon from '@/components/MyIcon.vue'
         红色资源
         <template #icon="{ active }">
           <my-icon
-            :name="`home-article-${active ? 'active' : 'default'}`"
+            :name="`home-resource-${active ? 'active' : 'default'}`"
           ></my-icon>
         </template>
       </van-tabbar-item>
@@ -26,7 +26,7 @@ import MyIcon from '@/components/MyIcon.vue'
         好友
         <template #icon="{ active }">
           <my-icon
-            :name="`home-notice-${active ? 'active' : 'default'}`"
+            :name="`home-friend-${active ? 'active' : 'default'}`"
           ></my-icon>
         </template>
       </van-tabbar-item>

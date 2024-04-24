@@ -79,7 +79,7 @@ const tools = [
         <div class="user" @click="router.push('/user/userInfo')">
           <p>{{ currentUser.username }}</p>
           <p>
-            {{ currentUser.userProfile }}
+            <span>{{ currentUser.userProfile }}</span>
             <van-icon name="edit" />
           </p>
         </div>
@@ -159,7 +159,7 @@ const tools = [
     height: 200px;
     background: linear-gradient(
         180deg,
-        rgba(44, 181, 165, 0.46),
+        rgba(206, 62, 96, 0.85),
         rgba(44, 181, 165, 0)
     );
     margin: 0 -15px;
@@ -177,6 +177,8 @@ const tools = [
 
       .user {
         padding-left: 10px;
+        width: 100%;
+        overflow: hidden;
 
         p {
           &:first-child {
@@ -188,6 +190,11 @@ const tools = [
             margin-top: 10px;
             color: var(--cp-primary);
             font-size: 16px;
+            width: 100%;
+            overflow: hidden;
+
+            span {
+            }
           }
         }
       }

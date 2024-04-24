@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
   favOrCancelFavArticleApi,
   getArticleDetailApi
 } from '@/services/article.js'
 import MyNavBar from '@/components/MyNavBar.vue'
-import { showConfirmDialog, showSuccessToast, showToast } from 'vant'
+import { showConfirmDialog, showSuccessToast } from 'vant'
 import {
   addReplyApi,
   deleteMyReplyApi,
@@ -73,13 +73,9 @@ const onSubmit = async () => {
   await addReplyApi(replyForm.value)
   searchForm.value.pageNo = 1
   await getArticleReplyPageList()
-  // 不是子评论才添加回复次数
-  if (childParams.value.answerId) {
-    article.value.replyTimes++
-  }
-  replyForm.value.content = ''
+  await getArticleDetail()
   show.value = false
-  childParams.value.answerId = undefined
+  replyForm.value.content = ''
   showSuccessToast('评论成功')
 }
 const onReply = async (item) => {
@@ -162,7 +158,7 @@ onMounted(() => {
             {{ item.createTime }}
             <van-divider vertical dashed />
             <span @click="getChildReply(item.id)" class="childReply"
-              >评论数量：{{ item.replyTimes }}</span
+            >评论数量：{{ item.replyTimes }}</span
             >
             <van-divider vertical dashed />
             <van-icon name="comment-o" @click="onReply(item)" />
@@ -230,7 +226,11 @@ onMounted(() => {
       <!-- 文章评价 -->
       <div class="comment" style="padding: 0">
         <div class="comment-list">
-          <div class="comment-item" v-for="item in childReplyList" :key="item.id">
+          <div
+            class="comment-item"
+            v-for="item in childReplyList"
+            :key="item.id"
+          >
             <div class="top" @click="router.push(`/userInfo/${item.userId}`)">
               <img :src="item.userAvatar" alt="" />
               <div class="name">{{ item.username }}</div>

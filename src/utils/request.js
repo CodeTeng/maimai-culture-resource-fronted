@@ -3,9 +3,8 @@ import router from '@/router'
 import { closeToast, showFailToast, showLoadingToast } from 'vant'
 import { useUserStore } from '@/stores/index.js'
 
-// const isDev = import.meta.env.NODE_ENV === 'development'
 const instance = axios.create({
-  baseURL: 'http://localhost:8090/api',
+  baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 10000
 })
 

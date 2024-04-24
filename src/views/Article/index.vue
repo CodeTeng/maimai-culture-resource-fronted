@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import MyIcon from '@/components/MyIcon.vue'
 import { getTagListApi } from '@/services/tag.js'
 import ArticleList from '@/views/Article/components/ArticleList.vue'
+import { useRouter } from 'vue-router'
 
 const active = ref(0)
 const tagList = ref([])
@@ -11,6 +12,7 @@ const getTagList = async () => {
   const res = await getTagListApi()
   tagList.value = res.data
 }
+const router = useRouter()
 getTagList()
 </script>
 
@@ -20,7 +22,7 @@ getTagList()
     <div class="home-header">
       <div class="con">
         <h1>红色资源</h1>
-        <div class="search">
+        <div class="search" @click="router.push('/search')">
           <my-icon name="home-search" />
           搜一搜：红色文化/文化精神/传统文化/红色草原
         </div>
@@ -53,7 +55,7 @@ getTagList()
     top: 0;
     width: 100%;
     height: 90px;
-    background: linear-gradient(180deg, rgba(62, 206, 197, 0.85), #26bcc6);
+    background: linear-gradient(180deg, rgba(206, 62, 96, 0.85), #d81e06);
     border-bottom-left-radius: 150px 20px;
     border-bottom-right-radius: 150px 20px;
   }

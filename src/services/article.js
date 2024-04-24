@@ -30,3 +30,8 @@ export const favOrCancelFavArticleApi = (id, type) => {
     params: type
   })
 }
+
+// 分页搜索所有文章
+export const searchArticlePageApi = (data) => {
+  return request.post('/articles/searchPageArticle', data)
+}

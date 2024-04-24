@@ -7,6 +7,7 @@ import { option } from '@/utils/map.js'
 import { useUserStore } from '@/stores/index.js'
 import { getTagListApi } from '@/services/tag.js'
 import ArticleList from '@/views/Article/components/ArticleList.vue'
+import { useRouter } from 'vue-router'
 
 const active = ref(0)
 const videoUrls = ref([
@@ -45,6 +46,7 @@ onMounted(async () => {
   await getTagList()
   getUserTagList()
 })
+const router = useRouter()
 </script>
 
 <template>
@@ -58,7 +60,7 @@ onMounted(async () => {
     <div class="home-header">
       <div class="con">
         <h1>红色资源</h1>
-        <div class="search">
+        <div class="search" @click="router.push('/search')">
           <my-icon name="home-search" />
           搜一搜：红色文化/文化精神/传统文化/红色草原
         </div>
@@ -81,13 +83,19 @@ onMounted(async () => {
     <div class="home-banner">
       <van-swipe indicator-color="#fff" autoplay="3000">
         <van-swipe-item>
-          <img src="@/assets/ad.png" alt="" />
+          <img src="@/assets/swipe1.png" alt="" />
         </van-swipe-item>
         <van-swipe-item>
-          <img src="@/assets/ad.png" alt="" />
+          <img src="@/assets/swipe2.png" alt="" />
         </van-swipe-item>
         <van-swipe-item>
-          <img src="@/assets/ad.png" alt="" />
+          <img src="@/assets/swipe3.png" alt="" />
+        </van-swipe-item>
+        <van-swipe-item>
+          <img src="@/assets/swipe4.png" alt="" />
+        </van-swipe-item>
+        <van-swipe-item>
+          <img src="@/assets/swipe5.png" alt="" />
         </van-swipe-item>
       </van-swipe>
     </div>
@@ -117,7 +125,7 @@ onMounted(async () => {
     top: 0;
     width: 100%;
     height: 90px;
-    background: linear-gradient(180deg, rgba(62, 206, 197, 0.85), #26bcc6);
+    background: linear-gradient(180deg, rgba(206, 62, 96, 0.85), #d81e06);
     border-bottom-left-radius: 150px 20px;
     border-bottom-right-radius: 150px 20px;
   }
@@ -183,10 +191,11 @@ onMounted(async () => {
 .home-banner {
   padding: 10px 15px;
   height: 100px;
-
-  img {
-    width: 100%;
-    height: 100%;
+  .van-swipe-item {
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>

@@ -120,7 +120,7 @@ onMounted(() => {
     top: 0;
     width: 100%;
     height: 90px;
-    background: linear-gradient(180deg, rgba(62, 206, 197, 0.85), #26bcc6);
+    background: linear-gradient(180deg, rgba(206, 62, 96, 0.85), #d81e06);
     border-bottom-left-radius: 150px 20px;
     border-bottom-right-radius: 150px 20px;
   }

@@ -56,7 +56,7 @@ const onSubmit = async () => {
 <template>
   <div style="padding-top: 60px; margin-left: -10px; min-width: 380px">
     <div class="uploaderCenter">
-      <img class="img" src="@/assets/avatar.jpg" />
+      <img class="img" src="@/assets/avatar2.jpg" />
     </div>
     <div style="padding-top: 8px" />
     <van-row justify="center">

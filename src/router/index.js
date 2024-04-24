@@ -110,6 +110,11 @@ const router = createRouter({
       meta: { title: '选择标签' }
     },
     {
+      path: '/search',
+      component: () => import('@/views/Search/index.vue'),
+      meta: { title: '搜索' }
+    },
+    {
       path: '/demo',
       component: () => import('@/views/Reply/Demo.vue'),
       meta: { title: '评论demo' }

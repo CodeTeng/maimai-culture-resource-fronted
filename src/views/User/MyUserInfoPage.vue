@@ -11,6 +11,9 @@ import { uploadFileApi } from '@/services/common.js'
 const userStore = useUserStore()
 const currentUser = userStore.user
 const user = ref({})
+const minDate = new Date(1900, 0, 1)
+const maxDate = new Date()
+const currentDate = ref([])
 const getUserInfo = async () => {
   const res = await getCurrentUserApi()
   user.value = res.data
@@ -62,6 +65,10 @@ const afterRead = async (file) => {
   user.value.userAvatar = res.data
   showSuccessToast('上传成功')
 }
+const onTimerPicker = () => {
+  showPicker.value = true
+  currentDate.value = user.value.userBirthday.split('-')
+}
 </script>
 
 <template>
@@ -106,6 +113,7 @@ const afterRead = async (file) => {
             </template>
           </van-field>
           <van-field
+            required
             :rules="mobileRules"
             v-model="user.userPhone"
             :maxlength="11"
@@ -137,11 +145,14 @@ const afterRead = async (file) => {
             name="datePicker"
             label="你的生日"
             placeholder="点击选择时间"
-            @click="showPicker = true"
+            @click="onTimerPicker"
           />
           <van-popup v-model:show="showPicker" position="bottom">
             <van-date-picker
               @confirm="onConfirm"
+              :min-date="minDate"
+              :max-date="maxDate"
+              v-model="currentDate"
               @cancel="showPicker = false"
             />
           </van-popup>
